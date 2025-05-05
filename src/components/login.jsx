@@ -14,8 +14,8 @@ function Login({onLogin}){
                 <input type="text" id="name"/><br/>
                 <label htmlFor="reg-no">Register No.</label><br/>
                 <input type="text" id="reg-no"/><br/>
-                <label htmlFor="email">College Email ID</label><br/>
-                <input type="text" id="email"/><br/>
+                <label htmlFor="email">Password</label><br/>
+                <input type="text" id="pasword"/><br/>
                 <button type="submit">Login</button>
             </form>
             </div>
