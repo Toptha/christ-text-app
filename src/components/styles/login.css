@@ -1,0 +1,27 @@
+body{
+    background-color:#253440;
+}
+#logo1{
+  height: 80px;
+  position:absolute;
+  left:21%;
+  top:20px;
+}
+form{
+    margin-top:60px;
+    text-align:left;
+}
+button{
+    width:100%;
+}
+input{
+    width:93%;
+    height:20px;
+    border:solid rgb(197, 197, 197);
+    border-radius:5px;
+    margin:10px 0px;
+    padding:10px;
+    font-size:16px;
+}
+  
+  

@@ -1,0 +1,27 @@
+body{
+    background-color:#253440;
+}
+hr{
+    width:60%;
+    height:2px;
+    background-color: black;
+}
+#logo{
+    height:35px;
+    float:left;
+    position:absolute;
+    left:15px;
+    top:15px;
+  }
+.selector{
+    text-align:left;
+}
+select{
+    width:90%;
+    height:40px;
+    border-color:rgb(197, 197, 197);
+    border-radius:5px;
+    margin:15px 0px;
+    padding:10px;
+    font-size:16px;
+}
