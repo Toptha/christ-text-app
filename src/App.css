@@ -41,11 +41,15 @@ button{
   border:none;
 }
 button:hover{
-  background-color:rgb(191, 207, 255);
+  background-color:#b6d3ea;
   color:black;
   transition:0.4s;
 }
 label{
   font-size:1.1em;
   font-weight:500;
+}
+select, input{
+  background-color: white;
+  color:black;
 }
