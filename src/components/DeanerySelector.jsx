@@ -9,12 +9,12 @@ function DeanerySelector(){
                 <hr/>
                 <div class="selector">
                 <h3>Choose Your Academic Division:</h3>
-                <label htmlFor="deanery">Deanery</label><br/>
+                <label for="deanery">Deanery</label><br/>
                 <select name="deanery" >
                     <option value="" disabled selected>Select Deanery</option>
                     <option>School of Sciences</option>
                 </select><br/>
-                <label htmlFor="department">Department</label><br/>
+                <label for="department">Department</label><br/>
                 <select name="department">
                     <option value="" disabled selected>Select Department</option>
                     <option>Computer Science</option>
