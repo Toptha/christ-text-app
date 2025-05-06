@@ -42,6 +42,7 @@ function Signup() {
   };
   return (
     <>
+      <div className="app-container-1">
       <div className="box">
         <img src={logo} id="logo1" alt="Logo" />
         <form onSubmit={handleSignup}>
@@ -54,6 +55,7 @@ function Signup() {
           <p>Already have an account? <Link to="/">Log In</Link></p>
           <button type="submit">Sign Up</button>
         </form>
+      </div>
       </div>
     </>
   );

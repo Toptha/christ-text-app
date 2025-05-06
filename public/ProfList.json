@@ -1,0 +1,39 @@
+[
+  {
+    "name": "Dr. Alex George",
+    "position": "HOD, CS Department",
+    "email": "alex.george@christuniversity.in",
+    "image":"https://images.pexels.com/photos/3760373/pexels-photo-3760373.jpeg?auto=compress&cs=tinysrgb&w=800"
+  },
+  {
+    "name": "Dr. Grace Mathew",
+    "position": "BCA Coordinator, CS Department",
+    "email": "grace.mathew@christuniversity.in",
+    "image":"https://images.pexels.com/photos/17012450/pexels-photo-17012450/free-photo-of-indian-beautiful-chubby-girl.jpeg?auto=compress&cs=tinysrgb&w=800"
+  },
+  {
+    "name": "Dr. Vineeth Reddy",
+    "position": "B.Sc Coordinator",
+    "email": "vineeth.reddy@christuniversity.in",
+    "image":"https://images.pexels.com/photos/7580937/pexels-photo-7580937.jpeg?auto=compress&cs=tinysrgb&w=800"
+  },
+  {
+    "name": "Dr. Aparna Balakrishnan",
+    "position": "CS Department",
+    "email": "aparna.balakrishnan@christuniversity.in",
+    "image":"https://images.pexels.com/photos/12631107/pexels-photo-12631107.jpeg?auto=compress&cs=tinysrgb&w=800"
+  },
+  {
+    "name": "Dr. Priya Singh",
+    "position": "CS Department",
+    "email": "priya.singh@christuniversity.in",
+    "image":"https://images.pexels.com/photos/31871011/pexels-photo-31871011/free-photo-of-professional-black-and-white-portrait-of-a-woman.jpeg?auto=compress&cs=tinysrgb&w=800"
+  },
+  {
+    "name": "Dr. Sameera Verma",
+    "position": "CS Department",
+    "email": "sameera.verma@christuniversity.in",
+    "image":"https://images.pexels.com/photos/9834874/pexels-photo-9834874.jpeg?auto=compress&cs=tinysrgb&w=800"
+  }
+]
+  

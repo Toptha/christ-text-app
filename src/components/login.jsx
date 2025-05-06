@@ -8,18 +8,20 @@ function Login({onLogin}){
       };
     return(
         <>
-            <div class="box">
+            <div className="app-container-1">
+            <div className="box">
             <img src={logo} id="logo1"/>
             <form onSubmit={handleLogin}>
                 <label htmlFor="email">College Email ID</label><br/>
-                <input type="text" id="email" required/><br/>
+                <input type="text" placeholder="Enter College Email" id="email" required/><br/>
                 <label htmlFor="reg-no">Register No.</label><br/>
-                <input type="text" id="reg-no" required/><br/>
+                <input type="text" placeholder="Enter Register No." id="reg-no" required/><br/>
                 <label htmlFor="password">Password</label><br/>
-                <input type="password" id="password" required/><br/>
+                <input type="password" placeholder="Enter Password" id="password" required/><br/>
                 <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
                 <button type="submit">Login</button>
             </form>
+            </div>
             </div>
         </>
     )
