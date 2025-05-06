@@ -30,7 +30,7 @@ function Signup() {
       const response= await fetch('https://christ-text-app-server.onrender.com/api/auth/signup', {
         method:'POST',
         headers:{ 'Content-Type': 'application/json' },
-        body:JSON.stringify({ username: email, password }),
+        body:JSON.stringify({ email, regNo, password }),
       });
   
       const data= await response.json();
