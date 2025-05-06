@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import DeanerySelector from './components/DeanerySelector'
 import Login from './components/login'
-import Signup from './components/signup'
+import Signup from './components/Signup'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
