@@ -14,32 +14,38 @@ function Signup() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const handleSignup = (e) => {
+  const handleSignup= async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.regNo || !formData.email || !formData.password || !formData.confirmPassword) {
-      setError('All fields are required.');
-      return;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match.');
-      return;
-    }
-    if (!formData.email.endsWith('christuniversity.in')) {
+    const {email, regNo, password, confirmPassword}= formData;
+    console.log(regNo);
+    if (!email.endsWith('christuniversity.in')) {
       setError('Please enter a valid College Email ID.');
       return;
     }
-    if (isNaN(formData.regNo)) {
-      setError('Invalid Register No.');
+    if (password!== confirmPassword) {
+      setError('Passwords do not match.');
       return;
     }
-    if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long.');
-      return;
+    try {
+      const response= await fetch('https://christ-text-app-server.onrender.com/api/auth/signup', {
+        method:'POST',
+        headers:{ 'Content-Type': 'application/json' },
+        body:JSON.stringify({ username: email, password }),
+      });
+  
+      const data= await response.json();
+      if (response.ok) {
+        alert(data.message);
+        window.location.href= '/'; // redirect to login
+      } else {
+        setError(data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Signup failed. Try again later.');
     }
-    setError('');
-    alert('Signup successful!');
-    window.location.href = '/';
   };
+  
   return (
       <div className="app-container-1">
       <div className="box">
