@@ -41,7 +41,6 @@ function Signup() {
     window.location.href = '/';
   };
   return (
-    <>
       <div className="app-container-1">
       <div className="box">
         <img src={logo} id="logo1" alt="Logo" />
@@ -52,12 +51,11 @@ function Signup() {
           <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required /><br />
           <input type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} required /><br />
           {error && <p style={{ color: 'red' }}>{error}</p>}
-          <p>Already have an account? <Link to="/">Log In</Link></p>
           <button type="submit">Sign Up</button>
+          <p className='paragraph'><b>Already have an account? </b> <br/><Link to="/" style={{color:'#253440'}}>Log In</Link></p>
         </form>
       </div>
       </div>
-    </>
   );
 }
 export default Signup;
