@@ -27,6 +27,13 @@ const ProfList = () => {
           </div>
         ))}
       </div>
+      <button onClick={() => {
+  localStorage.removeItem('email');
+  window.location.href = '/';
+}}>
+  Logout
+</button>
+
     </div>
   );
 };

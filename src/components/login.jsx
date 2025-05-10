@@ -2,29 +2,31 @@ import './styles/login.css'
 import logo from '../assets/logo.png'
 import { Link } from 'react-router-dom';
 function Login({onLogin}){
-    const handleLogin =async (e) => {
-        e.preventDefault();
-        const email =document.getElementById('email').value;
-        const password =document.getElementById('password').value;
-        try {
-          const response =await fetch('https://christ-text-app-server.onrender.com/api/auth/login', {
-            method:'POST',
-            headers:{ 'Content-Type': 'application/json' },
-            body:JSON.stringify({ username: email, password }),
-          });
-          const data =await response.json();
-          if (response.ok) {
-            alert(data.message);
-            onLogin(); 
-          } else {
-            alert(data.message);
-          }
-        } catch (err) {
-          console.error(err);
-          alert('Login failed. Please try again.');
-        }
-      };
-      
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    try {
+      const response = await fetch('https://christ-text-app-server.onrender.com/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: email, password }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('email', email);
+        alert(data.message);
+        onLogin();
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Login failed. Please try again.');
+    }
+  };
+  
     return(
             <div className="app-container-1">
                 <div className="box">
