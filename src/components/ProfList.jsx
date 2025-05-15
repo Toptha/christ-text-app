@@ -15,6 +15,7 @@ const ProfList = () => {
       <div className="box">
         <img src={logo} id="logo" alt="logo"/>
         <h2 className="title">PROFESSORS</h2>
+        <hr className="title"/>
         {professors.map((prof, index) => (
           <div className="professor" key={index}>
             <img src={prof.image} alt={prof.name} className="professor-image" />
@@ -27,13 +28,9 @@ const ProfList = () => {
           </div>
         ))}
       </div>
-      <button onClick={() => {
-  localStorage.removeItem('email');
-  window.location.href = '/';
-}}>
-  Logout
-</button>
-
+      <div class="logout">
+        <button id="logout-btn" onClick={() => {localStorage.removeItem('email');window.location.href = '/';}}>Logout</button><hr/>
+       </div>
     </div>
   );
 };

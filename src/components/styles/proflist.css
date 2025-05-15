@@ -9,6 +9,22 @@
 .box{
   text-align:left;
 }
+h2.title{
+  font-family:'Montserrat';
+  margin-bottom:5px;
+}
+hr.title{
+  max-width:20%;
+  border:none;
+  height:3px;
+  background-color:black;
+  margin-bottom:10%;
+  justify-self:flex-start;
+  transition:max-width 0.2s ease;
+}
+.title:hover + hr.title{
+  max-width:35%;
+}
   #logo{
     height:35px;
     float:left;
@@ -19,7 +35,6 @@
   .title {
     color:black;
     margin-top:0px;
-    margin-bottom: 30px;
     text-align:center;
   }
   .professor {
@@ -55,4 +70,31 @@
     float:right;
     width:100px;
   }
-  
+  .logout{
+    position:fixed;
+    top:10px;
+    right:20px;
+  }
+  #logout-btn{
+    width:80px;
+    text-align:center;
+    padding:8px;
+    background-color:transparent;
+    border-radius:0px;
+    transition:border 0.5s smooth;
+  }
+  .logout hr{
+    background-color:white;
+    height:1px;
+    margin-top:0px;
+    max-width:0px;
+    opacity:0;
+    transition:max-width 0.2s ease;
+  }
+  .logout:hover hr{
+    max-width:100px;
+    opacity:1;
+  }
+  #logout-btn:hover{
+    color:white;
+  }

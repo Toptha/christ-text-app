@@ -1,0 +1,91 @@
+body{
+    background-color:#253440;
+    font-family:'Roboto',sans-serif;
+}
+h1.title{
+    margin-bottom:10px;
+    font-family:'Montserrat';
+    font-weight:700;
+}
+hr.title{
+    max-width:18%;
+    height:3px;
+    background-color: black;
+    border:none;
+    margin-bottom:7%;
+    transition:max-width 0.2s ease;
+}
+.title:hover +hr.title{
+    max-width:25%;
+}
+.profile-pic-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+.profile-pic {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;     
+    object-fit: cover;       
+    border: 2px solid #ffffff;  
+    margin-top:15%;
+}
+.hidden {
+    display: none;
+}
+.box{
+    width:70vh;
+}
+
+.edit-photo{
+    font-weight:800;
+    font-size:1.15em;
+}
+.info-container{
+    display:flex;
+    gap:10%;
+}
+.info{
+    width:60%;
+    display:flex;
+    flex-direction:column;
+    float:right;
+    text-align:left;
+}
+input{
+    height:25px;
+    width:100%;
+    padding:10px;
+    background-color:#b6d3ea;
+    color:black;
+    border:1px solid #b6d3ea;
+    border-radius:5px;
+    font-size:0.9em;
+    margin-bottom:6%;
+}
+label{
+    font-size:0.80em;
+}
+h4{
+    font-weight:800;
+    font-size:1.15em;
+    color:black;
+    font-family:'Montserrat';
+    margin-bottom:10px;
+}
+.account-info{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left:0;
+}
+.account-info input{
+    margin-bottom:4%;
+    width:83%;
+    align-items: flex-start;
+}
+input::placeholder{
+    color:black;
+}
