@@ -48,11 +48,30 @@ button:hover{
   color:black;
   transition:0.4s;
 }
+button:focus, input:focus, select:focus {
+    outline: none;
+    box-shadow: none;
+}
 label{
   font-size:1.1em;
   font-weight:500;
+  color:black;
 }
 select, input{
   background-color: white;
   color:black;
+}
+input:-webkit-autofill {
+  background-color: white !important; 
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: black !important; 
+  transition: background-color 5000s ease-in-out 0s; 
+}
+.link-style{
+  color:black;
+  transition:0.5s;
+  font-weight:bold;
+}
+.link-style:hover{
+  color:#3a6181;
 }

@@ -59,7 +59,7 @@ function Signup() {
           <input type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} required /><br />
           {error && <p style={{ color: 'red' }}>{error}</p>}
           <button type="submit">Sign Up</button>
-          <p className='paragraph'><b>Already have an account? </b> <br/><Link to="/" style={{color:'#253440'}}>Log In</Link></p>
+          <p className='paragraph'>&nbsp;Already have an account?&nbsp;&nbsp;<Link to="/" className="link-style">Log In</Link></p>
         </form>
       </div>
       </div>

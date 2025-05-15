@@ -39,7 +39,7 @@ function Login({onLogin}){
                         <label htmlFor="password">Password</label><br/>
                         <input type="password" placeholder="Enter Password" id="password" required/><br/>
                         <button type="submit">Login</button>
-                        <p className="paragraph"><b>Don't have an account? </b><br/> <Link to="/signup" style={{color:'#253440'}}>Sign Up</Link></p>
+                        <p className="paragraph">&nbsp;Don't have an account?&nbsp;&nbsp;<Link to="/signup" className="link-style">Sign Up</Link></p>
                     </form>
                 </div>
             </div>
