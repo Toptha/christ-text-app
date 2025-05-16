@@ -2,6 +2,9 @@ body{
     background-color:#253440;
     font-family:'Roboto',sans-serif;
 }
+.box{
+    width:60vh;
+}
 h1.title{
     margin-bottom:10px;
     font-family:'Montserrat';
@@ -12,17 +15,18 @@ hr.title{
     height:3px;
     background-color: black;
     border:none;
-    margin-bottom:7%;
     transition:max-width 0.2s ease;
+    margin-bottom:10%;
 }
 .title:hover +hr.title{
-    max-width:25%;
+    max-width:30%;
 }
 .profile-pic-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
+    margin-bottom:5%;
 }
 .profile-pic {
     width: 200px;
@@ -30,13 +34,9 @@ hr.title{
     border-radius: 50%;     
     object-fit: cover;       
     border: 2px solid #ffffff;  
-    margin-top:15%;
 }
 .hidden {
     display: none;
-}
-.box{
-    width:70vh;
 }
 
 .edit-photo{
@@ -63,28 +63,10 @@ input{
     border:1px solid #d4e4f4;
     border-radius:5px;
     font-size:0.9em;
-    margin-bottom:6%;
+    margin-bottom:3%;
 }
 label{
     font-size:0.80em;
-}
-h4{
-    font-weight:800;
-    font-size:1.15em;
-    color:black;
-    font-family:'Montserrat';
-    margin-bottom:10px;
-}
-.account-info{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding-left:0;
-}
-.account-info input{
-    margin-bottom:4%;
-    width:83%;
-    align-items: flex-start;
 }
 input::placeholder{
     color:black;
