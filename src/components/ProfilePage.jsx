@@ -1,4 +1,5 @@
 import './styles/profile.css'
+import logo from '../assets/logo.png'
 function ProfilePage(){
     const handleImageUpload=async (e)=>{
     }
@@ -6,6 +7,7 @@ function ProfilePage(){
         <>
             <div className="app-container-4">
                 <div className="box">
+                    <img src={logo} id="logo" alt="logo"/>
                     <h1 className="title">PROFILE</h1>
                     <hr className="title"/>
                     <div className="info-container">
