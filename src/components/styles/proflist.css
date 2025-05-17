@@ -25,11 +25,11 @@ hr.title{
   transition:max-width 0.2s ease;
 }
   #logo{
-    height:25px;
+    height:24px;
     float:left;
     position:absolute;
-    left:15px;
-    top:15px;
+    left:20px;
+    top:20px;
   }
   .title {
     color:black;
