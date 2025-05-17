@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './styles/proflist.css';
 import logo from '../assets/logo.png';
 const ProfList = () => {
@@ -16,17 +17,22 @@ const ProfList = () => {
         <img src={logo} id="logo" alt="logo"/>
         <h2 className="title">PROFESSORS</h2>
         <hr className="title"/>
+        <div className="prof-list">
         {professors.map((prof, index) => (
-          <div className="professor" key={index}>
+          <div className={`professor ${index % 2 === 1 ? 'reverse' : ''}`} key={index}>
             <img src={prof.image} alt={prof.name} className="professor-image" />
             <div className="info">
               <p className="name">{prof.name}</p>
               <p className="position">{prof.position}</p>
               <p className="email">{prof.email}</p>
             </div>
-            <button className="chat-button">Chat</button>
           </div>
         ))}
+        </div>
+        <div id="chat-link">
+        <Link to="/chat"><b>Click Here</b> to Start A Conversation</Link>
+        <hr/>
+        </div>
       </div>
       <div class="logout">
         <button id="logout-btn" onClick={() => {localStorage.removeItem('email');window.location.href = '/';}}>Logout</button><hr/>

@@ -2,7 +2,7 @@ body{
     background-color:#253440;
     font-family:'Roboto',sans-serif;
 }
-.box{
+.app-container-4 .box{
     width:60vh;
 }
 h1.title{
@@ -54,7 +54,7 @@ hr.title{
     float:right;
     text-align:left;
 }
-input{
+.app-container-4 input{
     height:25px;
     width:100%;
     padding:10px;
@@ -65,9 +65,9 @@ input{
     font-size:0.9em;
     margin-bottom:3%;
 }
-label{
+.app-container-4 label{
     font-size:0.80em;
 }
-input::placeholder{
+.app-container-4 input::placeholder{
     color:black;
 }

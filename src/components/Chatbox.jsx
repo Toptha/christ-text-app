@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import './chatbox.css';
-import profData from './ProfList.json';
+import './styles/chatbox.css';
 import EmojiPicker from 'emoji-picker-react';
-
+import { Link } from 'react-router-dom';
+import logo from '../assets/logo.png';
 const Chatbox = () => {
   const [professors, setProfessors] = useState([]);
   const [filteredProfs, setFilteredProfs] = useState([]);
@@ -12,9 +12,14 @@ const Chatbox = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   useEffect(() => {
-    const initialized = profData.map(prof => ({ ...prof, messages: [] }));
-    setProfessors(initialized);
-    setFilteredProfs(initialized);
+    fetch('/ProfList.json')
+      .then(res => res.json())
+      .then(data => {
+        const initialized = data.map(prof => ({ ...prof, messages: [] }));
+        setProfessors(initialized);
+        setFilteredProfs(initialized);
+      })
+      .catch(err => console.error('Error loading prof list:', err));
   }, []);
 
   const handleSelectProf = (prof) => {
@@ -58,11 +63,13 @@ const Chatbox = () => {
   };
 
   return (
+    <>
     <div className="chat-container">
+    <div className="box">
       <div className="sidebar">
         <div className="sidebar-header">
-          <h2 className="logo">UniVerse</h2>
-          <img src="https://i.pravatar.cc/150?img=11" alt="profile" className="profile-pic right" />
+          <img src={logo} id="logo-2" alt="logo"/>
+          <Link to="/profile"><img src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=800" alt="profile" className="profile-pic right" id="profile-link"/></Link>
         </div>
         <input
           type="text"
@@ -110,9 +117,8 @@ const Chatbox = () => {
             </div>
 
             <div className="chat-input">
-              <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}>😊</button>
-              <label className="upload-icon">
-                📎
+              <button id="emoji-button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}><i class="fa-regular fa-face-smile"></i></button>
+              <label className="upload-icon"><i class="fa-regular fa-image"></i>
                 <input
                   type="file"
                   onChange={(e) => {
@@ -146,6 +152,8 @@ const Chatbox = () => {
         )}
       </div>
     </div>
+    </div>
+    </>
   );
 };
 

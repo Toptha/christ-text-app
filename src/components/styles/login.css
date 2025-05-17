@@ -10,14 +10,17 @@ body{
     justify-content: center;
   }
 #logo1{
-  height: 80px;
+  height: 60px;
   position:absolute;
-  left:25%;
-  top:20px;
+  left:24%;
+  top:25px;
 }
 form{
     margin-top:60px;
     text-align:left;
+}
+label{
+        font-size:1.1em;
 }
 button{
     width:100%;
@@ -30,6 +33,7 @@ input{
     margin:10px 0px;
     padding:10px;
     font-size:16px;
+    background-color: white;
 }
 .paragraph{
     color: #727272;
