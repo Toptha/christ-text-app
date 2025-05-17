@@ -3,7 +3,7 @@ import './App.css';
 import DeanerySelector from './components/DeanerySelector';
 import Login from './components/login';
 import Signup from './components/Signup';
-import ChatBox from './components/ChatBox'; 
+import Chatbox from './components/Chatbox'; 
 import ProfilePage from './components/ProfilePage';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
@@ -36,7 +36,7 @@ function App() {
       ) : (
         <Routes>
           <Route path="/" element={<DeanerySelector isSignup={isSignup} />} />
-          <Route path="/chat" element={<ChatBox />} />
+          <Route path="/chat" element={<Chatbox />} />
           <Route path="/profile" element={<ProfilePage/>} /> 
         </Routes>
       )}
