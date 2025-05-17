@@ -37,7 +37,7 @@ function Signup() {
       if (response.ok) {
         alert(data.message);
         localStorage.setItem('email', email);
-        window.location.href= '/'; // redirect to login
+        window.location.href= '/'; 
       } else {
         setError(data.message);
       }

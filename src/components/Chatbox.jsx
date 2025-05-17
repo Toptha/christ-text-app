@@ -1,60 +1,97 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect ,useState, useRef } from 'react';
+import { io } from 'socket.io-client';
 import './styles/chatbox.css';
 import EmojiPicker from 'emoji-picker-react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
+
 const Chatbox = () => {
-  const [professors, setProfessors] = useState([]);
-  const [filteredProfs, setFilteredProfs] = useState([]);
-  const [selectedProf, setSelectedProf] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  useEffect(() => {
-    fetch('/ProfList.json')
-      .then(res => res.json())
-      .then(data => {
-        const initialized = data.map(prof => ({ ...prof, messages: [] }));
-        setProfessors(initialized);
-        setFilteredProfs(initialized);
-      })
-      .catch(err => console.error('Error loading prof list:', err));
-  }, []);
+  const currentUser = localStorage.getItem('email') || '';
+  const typingTimeout = useRef(null);
 
-  const handleSelectProf = (prof) => {
-    setSelectedProf(prof);
-    setInput('');
-    setIsTyping(false);
+  const socket = useRef(null);
+
+useEffect(() => {
+  socket.current = io('https://christ-text-app-server.onrender.com');
+  socket.current.emit('join_room', currentUser);
+
+  const messageListener = (message) => {
+    if (
+      (message.senderEmail === selectedUser?.email && message.receiverEmail === currentUser) ||
+      (message.senderEmail === currentUser && message.receiverEmail === selectedUser?.email)
+    ) {
+      setMessages(prev => [...prev, message]);
+    }
   };
 
-  const handleSend = () => {
-    if (!input.trim()) return;
+  socket.current.on('receive_message', messageListener);
 
-    const updated = professors.map(prof => {
-      if (prof.name === selectedProf.name) {
-        return {
-          ...prof,
-          messages: [...prof.messages, {
-            text: input,
-            sender: 'student',
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          }],
-        };
-      }
-      return prof;
-    });
+  return () => {
+    socket.current.off('receive_message', messageListener);
+    socket.current.disconnect();
+  };
+}, [currentUser, selectedUser]);
 
-    setProfessors(updated);
-    setFilteredProfs(updated);
-    setSelectedProf(updated.find(p => p.name === selectedProf.name));
-    setInput('');
-    setIsTyping(false);
+
+  const handleSearch = async () => {
+    try {
+      const res = await fetch(`https://christ-text-app-server.onrender.com/api/search?search=${searchQuery}&currentUser=${currentUser}`);
+      const data = await res.json();
+      setUsers(data.users || []);
+    } catch (err) {
+      console.error('Error searching users:', err);
+    }
   };
 
-  const handleSearch = (e) => {
-    const val = e.target.value.toLowerCase();
-    setFilteredProfs(professors.filter(p => p.name.toLowerCase().includes(val)));
+  const handleSelectUser = async (user) => {
+    setSelectedUser(user);
+    setInput('');
+    setIsTyping(false);
+
+    try {
+      const res = await fetch(`https://christ-text-app-server.onrender.com/api/messages?user1=${currentUser}&user2=${user.email}`);
+      const data = await res.json();
+      setMessages(data.messages || []);
+    } catch (err) {
+      console.error('Error fetching messages:', err);
+    }
+  };
+
+  const handleSend = async () => {
+    if (!input.trim() || !selectedUser) return;
+
+    const message = {
+      senderEmail: currentUser,
+      receiverEmail: selectedUser.email,
+      text: input,
+    };
+
+    try {
+      const res = await fetch('https://christ-text-app-server.onrender.com/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(message),
+      });
+
+      if (res.ok) {
+  const newMessage = { ...message, timestamp: new Date().toISOString() };
+  setMessages(prev => [...prev, newMessage]);
+
+  socket.current.emit('send_message', newMessage);
+  
+  setInput('');
+}
+    } catch (err) {
+      console.error('Error sending message:', err);
+    }
   };
 
   const handleEmojiClick = (emojiData) => {
@@ -62,98 +99,116 @@ const Chatbox = () => {
     setShowEmojiPicker(false);
   };
 
+  const handleTyping = (e) => {
+    setInput(e.target.value);
+    setIsTyping(true);
+    if (typingTimeout.current) clearTimeout(typingTimeout.current);
+    typingTimeout.current = setTimeout(() => setIsTyping(false), 1500);
+  };
+
   return (
-    <>
     <div className="chat-container">
-    <div className="box">
-      <div className="sidebar">
-        <div className="sidebar-header">
-          <img src={logo} id="logo-2" alt="logo"/>
-          <Link to="/profile"><img src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=800" alt="profile" className="profile-pic right" id="profile-link"/></Link>
-        </div>
-        <input
-          type="text"
-          placeholder="Search Professors"
-          className="search-input"
-          onChange={handleSearch}
-        />
-        <div className="contacts">
-          {filteredProfs.map((prof, index) => (
-            <div
-              key={index}
-              className={`contact ${selectedProf?.name === prof.name ? 'active' : ''}`}
-              onClick={() => handleSelectProf(prof)}
-            >
-              <img src={prof.image} alt={prof.name} />
-              <div>
-                <p>{prof.name}</p>
-                <span>{prof.position}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="chatbox">
-        {selectedProf ? (
-          <>
-            <div className="chat-header">
-              <img src={selectedProf.image} alt={selectedProf.name} />
-              <h3>{selectedProf.name}</h3>
-            </div>
-
-            <div className="chat-messages">
-              {selectedProf.messages.length === 0 ? (
-                <div className="no-messages">Start the conversation</div>
-              ) : (
-                selectedProf.messages.map((msg, idx) => (
-                  <div className={`message ${msg.sender}`} key={idx}>
-                    <p>{msg.text}</p>
-                    <span>{msg.time}</span>
-                  </div>
-                ))
-              )}
-              {isTyping && <div className="typing-animation">Typing<span>.</span><span>.</span><span>.</span></div>}
-            </div>
-
-            <div className="chat-input">
-              <button id="emoji-button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}><i class="fa-regular fa-face-smile"></i></button>
-              <label className="upload-icon"><i class="fa-regular fa-image"></i>
-                <input
-                  type="file"
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-                    if (file) setInput(file.name);
-                  }}
-                />
-              </label>
-              <input
-                type="text"
-                placeholder="Type a message..."
-                value={input}
-                onChange={(e) => {
-                  setInput(e.target.value);
-                  setIsTyping(true);
-                  setTimeout(() => setIsTyping(false), 1500);
-                }}
-                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+      <div className="box">
+        <div className="sidebar">
+          <div className="sidebar-header">
+            <img src={logo} id="logo-2" alt="logo" />
+            <Link to="/profile">
+              <img
+                src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="profile"
+                className="profile-pic right"
+                id="profile-link"
               />
-              <button onClick={handleSend}>Send</button>
-            </div>
+            </Link>
+          </div>
 
-            {showEmojiPicker && (
-              <div className="emoji-picker">
-                <EmojiPicker onEmojiClick={handleEmojiClick} />
+          <input
+            type="text"
+            placeholder="Search Users"
+            className="search-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          />
+          <button onClick={handleSearch} className="search-btn">Search</button>
+
+          <div className="contacts">
+            {users.map((user) => (
+              <div
+                key={user._id}
+                className={`contact ${selectedUser?.email === user.email ? 'active' : ''}`}
+                onClick={() => handleSelectUser(user)}
+              >
+                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="user" />
+                <div><p>{user.email}</p></div>
               </div>
-            )}
-          </>
-        ) : (
-          <div className="no-selection">Select a professor to start chatting</div>
-        )}
+            ))}
+          </div>
+        </div>
+
+        <div className="chatbox">
+          {selectedUser ? (
+            <>
+              <div className="chat-header">
+                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="user" />
+                <h3>{selectedUser.email}</h3>
+              </div>
+
+              <div className="chat-messages">
+                {messages.length === 0 ? (
+                  <div className="no-messages">Start the conversation</div>
+                ) : (
+                  messages.map((msg, idx) => (
+                    <div
+                      className={`message ${msg.senderEmail === currentUser ? 'student' : 'professor'}`}
+                      key={msg._id || idx}
+                    >
+                      <p>{msg.text}</p>
+                      <span>{msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}</span>
+                    </div>
+                  ))
+                )}
+                {isTyping && (
+                  <div className="typing-animation">Typing<span>.</span><span>.</span><span>.</span></div>
+                )}
+              </div>
+
+              <div className="chat-input">
+                <button id="emoji-button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+                  <i className="fa-regular fa-face-smile"></i>
+                </button>
+                <label className="upload-icon">
+                  <i className="fa-regular fa-image"></i>
+                  <input
+                    type="file"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) setInput(file.name);
+                    }}
+                  />
+                </label>
+                <input
+                  type="text"
+                  placeholder="Type a message..."
+                  value={input}
+                  onChange={handleTyping}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                />
+                <button onClick={handleSend}>Send</button>
+              </div>
+
+              {showEmojiPicker && (
+                <div className="emoji-picker">
+                  <EmojiPicker onEmojiClick={handleEmojiClick} />
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="no-selection">Search and select a user to start chatting</div>
+          )}
+        </div>
       </div>
     </div>
-    </div>
-    </>
   );
 };
 
