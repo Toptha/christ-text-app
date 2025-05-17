@@ -6,10 +6,33 @@ import Signup from './components/Signup';
 import Chatbox from './components/Chatbox'; 
 import ProfilePage from './components/ProfilePage';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwt_decode(token);
+        const now = Date.now() / 1000; 
+
+        if (decoded.exp > now) {
+          setIsLoggedIn(true);
+        } else {
+          localStorage.removeItem('token');
+          localStorage.removeItem('email');
+          setIsLoggedIn(false);
+        }
+      } catch (err) {
+        console.error('Token decoding failed:', err);
+        localStorage.removeItem('token');
+        localStorage.removeItem('email');
+        setIsLoggedIn(false);
+      }
+    }
+  }, []);
 
   const handleLogin = () => {
     setIsLoggedIn(true);
@@ -20,11 +43,6 @@ function App() {
     setIsLoggedIn(true);
     setIsSignup(true);
   };
-
-  useEffect(() => {
-    const email = localStorage.getItem('email');
-    if (email) setIsLoggedIn(true);
-  }, []);
 
   return (
     <Router>
@@ -37,7 +55,7 @@ function App() {
         <Routes>
           <Route path="/" element={<DeanerySelector isSignup={isSignup} />} />
           <Route path="/chat" element={<Chatbox />} />
-          <Route path="/profile" element={<ProfilePage/>} /> 
+          <Route path="/profile" element={<ProfilePage />} /> 
         </Routes>
       )}
     </Router>
