@@ -29,9 +29,9 @@ function ProfilePage() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('email');
-    navigate('/'); 
+    localStorage.clear(); 
+    navigate('/', { replace: true }); 
+    window.location.reload(); 
   };
 
   const handleImageUpload = async (e) => {
