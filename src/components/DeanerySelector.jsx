@@ -9,27 +9,30 @@ function DeanerySelector({ isSignup }) {
   const [showProfList, setShowProfList] = useState(false);
 
   useEffect(() => {
-    let timeoutId;
-    if (deanery && department) {
-      timeoutId = setTimeout(async () => {
+    const updateAndShowProfList = async () => {
+      if (deanery && department) {
         if (isSignup) {
           const email = localStorage.getItem('email');
           try {
-            await fetch('https://christ-text-app-server.onrender.com/api/user/update', {
+            const res = await fetch('https://christ-text-app-server.onrender.com/api/user/update', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({ email, deanery, department }),
             });
+
+            const data = await res.json();
+            console.log('Update response:', data);
           } catch (err) {
             console.error('Error saving user info:', err);
           }
         }
         setShowProfList(true);
-      }, 1000);
-    }
-    return () => clearTimeout(timeoutId);
+      }
+    };
+
+    updateAndShowProfList();
   }, [deanery, department]);
 
   if (showProfList) {
