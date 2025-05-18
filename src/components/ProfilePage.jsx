@@ -18,7 +18,7 @@ function ProfilePage() {
       try {
         const decoded = jwtDecode(token);
         setUserDetails({
-          name: decoded.name || '',
+          name: decoded.name || localStorage.getItem('name') || '',
           regNo: decoded.regNo || '',
           email: decoded.email || '',
         });
