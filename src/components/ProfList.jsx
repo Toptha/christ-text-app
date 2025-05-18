@@ -35,7 +35,7 @@ const ProfList = () => {
         </div>
       </div>
       <div class="logout">
-        <button id="logout-btn" onClick={() => {localStorage.removeItem('email');window.location.href = '/';}}>Logout</button><hr/>
+        <button id="logout-btn" onClick={() => {localStorage.removeItem('token');localStorage.removeItem('email');window.location.href = '/';}}>Logout</button><hr/>
        </div>
     </div>
   );
