@@ -6,7 +6,7 @@ import Signup from './components/Signup';
 import Chatbox from './components/Chatbox'; 
 import ProfilePage from './components/ProfilePage';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -15,7 +15,7 @@ function App() {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const decoded = jwt_decode(token);
+        const decoded = jwtDecode(token);
         const now = Date.now() / 1000; 
 
         if (decoded.exp > now) {
