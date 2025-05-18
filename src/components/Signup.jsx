@@ -16,7 +16,7 @@ function Signup() {
   };
   const handleSignup= async (e) => {
     e.preventDefault();
-    const {email, regNo, password, confirmPassword}= formData;
+    const {name, email, regNo, password, confirmPassword}= formData;
     console.log(regNo);
     if (!email.endsWith('christuniversity.in')) {
       setError('Please enter a valid College Email ID.');
@@ -30,7 +30,7 @@ function Signup() {
       const response= await fetch('https://christ-text-app-server.onrender.com/api/auth/signup', {
         method:'POST',
         headers:{ 'Content-Type': 'application/json' },
-        body:JSON.stringify({ email, regNo, password }),
+        body:JSON.stringify({ name, email, regNo, password }),
       });
   
       const data= await response.json();

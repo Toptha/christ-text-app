@@ -43,6 +43,10 @@ useEffect(() => {
 
   const handleSearch = async () => {
     try {
+        if (!searchQuery.trim()) {
+          setUsers([]); 
+          return;
+        }
       const res = await fetch(`https://christ-text-app-server.onrender.com/api/search?search=${searchQuery}&currentUser=${currentUser}`);
       const data = await res.json();
       setUsers(data.users || []);
