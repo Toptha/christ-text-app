@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './styles/deanery.css';
 import logo from '../assets/logo.png';
 import ProfList from './ProfList';
@@ -7,33 +7,38 @@ function DeanerySelector({ isSignup }) {
   const [deanery, setDeanery] = useState('');
   const [department, setDepartment] = useState('');
   const [showProfList, setShowProfList] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const updateAndShowProfList = async () => {
-      if (deanery && department) {
-        if (isSignup) {
-          const email = localStorage.getItem('email');
-          try {
-            const res = await fetch('https://christ-text-app-server.onrender.com/api/user/update', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ email, deanery, department }),
-            });
+  const handleContinue = async () => {
+    if (!deanery || !department) {
+      alert('Please select both deanery and department');
+      return;
+    }
 
-            const data = await res.json();
-            console.log('Update response:', data);
-          } catch (err) {
-            console.error('Error saving user info:', err);
-          }
-        }
+    if (isSignup) {
+      const email = localStorage.getItem('email');
+      setLoading(true);
+      try {
+        const res = await fetch('https://christ-text-app-server.onrender.com/api/user/update', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, deanery, department }),
+        });
+
+        const data = await res.json();
+        console.log('Update response:', data);
+      } catch (err) {
+        console.error('Error saving user info:', err);
+      } finally {
+        setLoading(false);
         setShowProfList(true);
       }
-    };
-
-    updateAndShowProfList();
-  }, [deanery, department]);
+    } else {
+      setShowProfList(true);
+    }
+  };
 
   if (showProfList) {
     return <ProfList deanery={deanery} department={department} />;
@@ -56,7 +61,10 @@ function DeanerySelector({ isSignup }) {
           <select name="department" value={department} onChange={(e) => setDepartment(e.target.value)}>
             <option value="" disabled>Select Department</option>
             <option>Computer Science</option>
-          </select>
+          </select><br />
+          <button onClick={handleContinue} disabled={loading}>
+            {loading ? 'Saving...' : 'Continue'}
+          </button>
         </div>
       </div>
     </div>
