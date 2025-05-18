@@ -16,6 +16,7 @@ function Login({onLogin}){
       if (response.ok) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('email', email);
+        localStorage.setItem('name', data.name);
         alert(data.message);
         onLogin();
       } else {

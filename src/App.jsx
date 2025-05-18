@@ -6,7 +6,7 @@ import Signup from './components/Signup';
 import Chatbox from './components/Chatbox'; 
 import ProfilePage from './components/ProfilePage';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import  jwtDecode  from 'jwt-decode';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
