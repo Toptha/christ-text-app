@@ -144,7 +144,7 @@ useEffect(() => {
                 onClick={() => handleSelectUser(user)}
               >
                 <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="user" />
-                <div><p>{user.email}</p></div>
+                <div><p>{user.name || user.email}</p></div>
               </div>
             ))}
           </div>
