@@ -47,7 +47,7 @@ function ProfilePage() {
           <hr className="title" />
           <div className="profile-pic-wrapper">
             <img
-              src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=800"
+              src=""
               alt="Profile"
               className="profile-pic"
             />
