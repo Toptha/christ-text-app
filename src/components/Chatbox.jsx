@@ -27,6 +27,7 @@ const faqData = {
 const Chatbox = () => {
   const profileImage = localStorage.getItem('profileImage') || defaultAvatar;
   const [searchQuery, setSearchQuery] = useState('');
+  const [allUsers, setAllUsers] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -36,17 +37,16 @@ const Chatbox = () => {
   const [showFAQ, setShowFAQ] = useState(true);
   const [faqLevel, setFaqLevel] = useState(0);
   const [faqHistory, setFaqHistory] = useState([]);
-
   const currentUser = localStorage.getItem('email') || '';
   const typingTimeout = useRef(null);
   const socket = useRef(null);
 
-  // Load contacts automatically on mount
   useEffect(() => {
     const fetchContacts = async () => {
       try {
         const res = await fetch(`https://christ-text-app-server.onrender.com/api/search?search=&currentUser=${currentUser}`);
         const data = await res.json();
+        setAllUsers(data.users || []);
         setUsers(data.users || []);
       } catch (err) {
         console.error('Error loading contacts:', err);
@@ -55,6 +55,18 @@ const Chatbox = () => {
 
     fetchContacts();
   }, [currentUser]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      const filtered = allUsers.filter((user) =>
+        user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setUsers(filtered);
+    }, 200);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery, allUsers]);
 
   useEffect(() => {
     socket.current = io('https://christ-text-app-server.onrender.com');
@@ -77,27 +89,22 @@ const Chatbox = () => {
     };
   }, [currentUser, selectedUser]);
 
-  // Search while typing (live search)
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      const fetchSearchResults = async () => {
-        if (!searchQuery.trim()) {
-          setUsers([]);
-          return;
-        }
-        try {
-          const res = await fetch(`https://christ-text-app-server.onrender.com/api/search?search=${searchQuery}&currentUser=${currentUser}`);
-          const data = await res.json();
-          setUsers(data.users || []);
-        } catch (err) {
-          console.error('Error searching users:', err);
-        }
-      };
-      fetchSearchResults();
-    }, 300); // debounce 300ms
+useEffect(() => {
+  const delayDebounceFn = setTimeout(() => {
+    const fetchSearchResults = async () => {
+      try {
+        const res = await fetch(`https://christ-text-app-server.onrender.com/api/search?search=${searchQuery}&currentUser=${currentUser}`);
+        const data = await res.json();
+        setUsers(data.users || []);
+      } catch (err) {
+        console.error('Error searching users:', err);
+      }
+    };
+    fetchSearchResults();
+  }, 300);
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery, currentUser]);
+  return () => clearTimeout(delayDebounceFn);
+}, [searchQuery, currentUser]);
 
   const handleSelectUser = async (user) => {
     setSelectedUser(user);
