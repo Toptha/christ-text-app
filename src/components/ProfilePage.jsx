@@ -3,7 +3,7 @@ import logo from '../assets/logo.png';
 import defaultAvatar from '../assets/default-avatar.png';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import * as jwtDecode from 'jwt-decode'; 
+import { jwtDecode } from 'jwt-decode'; 
 
 function ProfilePage() {
   const navigate = useNavigate();
