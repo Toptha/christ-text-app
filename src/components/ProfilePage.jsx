@@ -4,6 +4,7 @@ import defaultAvatar from '../assets/default-avatar.png';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode'; 
+import { Link } from 'react-router-dom';
 
 function ProfilePage() {
   const navigate = useNavigate();
