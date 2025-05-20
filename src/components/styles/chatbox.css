@@ -286,6 +286,14 @@
     color:black;
     padding-left:0px;
 }
+.faq-options button {
+  max-width: 300px;       
+  padding: 12px 12px;    
+  font-size: 14px;        
+  white-space: normal;   
+  word-wrap: break-word;  
+  margin: 5px;        
+}
 @keyframes blink {
   0%, 20% {
     opacity: 0;
