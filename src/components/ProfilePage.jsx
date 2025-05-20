@@ -19,7 +19,7 @@ function ProfilePage() {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const decoded = jwtDecode(token);  // decode token here
+        const decoded = jwtDecode(token);  
         setUserDetails({
           name: decoded.name || localStorage.getItem('name') || '',
           regNo: decoded.regNo || '',
@@ -62,7 +62,7 @@ function ProfilePage() {
         <hr className="title" />
         <div className="profile-pic-wrapper">
           <img
-            src={profileImage || defaultAvatar}  // default avatar if no image
+            src={profileImage || defaultAvatar}  
             alt="Profile"
             className="profile-pic"
           />
