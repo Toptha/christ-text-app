@@ -100,23 +100,6 @@ useEffect(() => {
     };
   }, [currentUser, selectedUser]);
 
-useEffect(() => {
-  const delayDebounceFn = setTimeout(() => {
-    const fetchSearchResults = async () => {
-      try {
-        const res = await fetch(`https://christ-text-app-server.onrender.com/api/search?search=${searchQuery}&currentUser=${currentUser}`);
-        const data = await res.json();
-        setUsers(data.users || []);
-      } catch (err) {
-        console.error('Error searching users:', err);
-      }
-    };
-    fetchSearchResults();
-  }, 300);
-
-  return () => clearTimeout(delayDebounceFn);
-}, [searchQuery, currentUser]);
-
   const handleSelectUser = async (user) => {
     setSelectedUser(user);
     setInput('');
