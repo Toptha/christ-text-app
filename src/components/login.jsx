@@ -6,6 +6,7 @@ function Login({onLogin}){
     e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const name = document.getElementById('name').value;
     try {
       const response = await fetch('https://christ-text-app-server.onrender.com/api/auth/login', {
         method: 'POST',
@@ -15,6 +16,7 @@ function Login({onLogin}){
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('name',name)
         localStorage.setItem('email', email);
         alert(data.message);
         onLogin();
@@ -32,6 +34,8 @@ function Login({onLogin}){
                 <div className="box">
                     <img src={logo} id="logo1"/>
                     <form onSubmit={handleLogin}>
+                        <label htmlFor="name">Name</label><br/>
+                        <input type="text" placeholder="Enter Your Name" id="name" required/><br/>
                         <label htmlFor="email">College Email ID</label><br/>
                         <input type="text" placeholder="Enter College Email" id="email" required/><br/>
                         <label htmlFor="reg-no">Register No.</label><br/>
