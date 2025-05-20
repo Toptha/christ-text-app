@@ -41,7 +41,7 @@ const Chatbox = () => {
   const typingTimeout = useRef(null);
   const socket = useRef(null);
 
-  useEffect(() => {
+useEffect(() => {
   const fetchAllUsers = async () => {
     try {
       const res = await fetch(`https://christ-text-app-server.onrender.com/api/search?search=&currentUser=${currentUser}`);
