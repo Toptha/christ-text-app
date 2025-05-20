@@ -57,12 +57,12 @@ const Chatbox = () => {
 }, [currentUser]);
 
 useEffect(() => {
+  if (!searchQuery.trim()) {
+    setUsers(allUsers);
+    return;
+  }
   const delayDebounceFn = setTimeout(() => {
     const fetchSearchResults = async () => {
-      if (!searchQuery.trim()) {
-        setUsers(allUsers);
-        return;
-      }
 
       try {
         const res = await fetch(`https://christ-text-app-server.onrender.com/api/search?search=${searchQuery}&currentUser=${currentUser}`);

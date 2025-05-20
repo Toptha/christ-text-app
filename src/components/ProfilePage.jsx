@@ -111,6 +111,7 @@ function ProfilePage() {
         <button onClick={handleLogout} style={{ marginTop: '20px' }}>
           Logout
         </button>
+        <p className="go-back"><Link to="/chat" className="link-style">Back</Link></p>
       </div>
     </div>
   );

@@ -71,3 +71,9 @@ hr.title{
 .app-container-4 input::placeholder{
     color:black;
 }
+.go-back{
+    color:#253440;
+    text-align: center;
+    align-items: center;
+    text-decoration: none;
+}
