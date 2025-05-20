@@ -27,7 +27,7 @@ const faqData = {
 const Chatbox = () => {
   const profileImage = localStorage.getItem('profileImage') || defaultAvatar;
   const [searchQuery, setSearchQuery] = useState('');
-  const [allUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -40,6 +40,21 @@ const Chatbox = () => {
   const currentUser = localStorage.getItem('email') || '';
   const typingTimeout = useRef(null);
   const socket = useRef(null);
+
+  useEffect(() => {
+  const fetchAllUsers = async () => {
+    try {
+      const res = await fetch(`https://christ-text-app-server.onrender.com/api/search?search=&currentUser=${currentUser}`);
+      const data = await res.json();
+      setAllUsers(data.users || []);
+      setUsers(data.users || []);
+    } catch (err) {
+      console.error('Error fetching all users:', err);
+    }
+  };
+
+  fetchAllUsers();
+}, [currentUser]);
 
 useEffect(() => {
   const delayDebounceFn = setTimeout(() => {
