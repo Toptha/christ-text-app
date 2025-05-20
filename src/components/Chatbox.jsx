@@ -1,11 +1,31 @@
-import React, { useEffect ,useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { io } from 'socket.io-client';
 import './styles/chatbox.css';
+import defaultAvatar from '../assets/default-avatar.png';
 import EmojiPicker from 'emoji-picker-react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
+const faqData = {
+  "General Queries": {
+    "Class Timings": "Your class timings are available on your course portal.",
+    "Attendance Policy": "You must maintain at least 75% attendance to be eligible for exams.",
+    "Exam Schedule": "Exam schedules are released 2 weeks before the semester ends."
+  },
+  "Assignment Related": {
+    "Deadline Extension": "Please contact your course instructor for deadline extensions.",
+    "Submission Issues": "Ensure your file is under 10MB and in PDF format.",
+    "Grading Queries": "Grades are published within 7 days of submission."
+  },
+  "Technical Support": {
+    "Login Issues": "Try resetting your password using the 'Forgot Password' option.",
+    "Website Not Working": "Clear cache or try using a different browser.",
+    "File Upload Problem": "Ensure file size is below the limit and in accepted format."
+  }
+};
+
 const Chatbox = () => {
+  const profileImage = localStorage.getItem('profileImage') || defaultAvatar;
   const [searchQuery, setSearchQuery] = useState('');
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -13,52 +33,79 @@ const Chatbox = () => {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showFAQ, setShowFAQ] = useState(true);
+  const [faqLevel, setFaqLevel] = useState(0);
+  const [faqHistory, setFaqHistory] = useState([]);
 
   const currentUser = localStorage.getItem('email') || '';
   const typingTimeout = useRef(null);
-
   const socket = useRef(null);
 
-useEffect(() => {
-  socket.current = io('https://christ-text-app-server.onrender.com');
-  socket.current.emit('join_room', currentUser);
+  // Load contacts automatically on mount
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const res = await fetch(`https://christ-text-app-server.onrender.com/api/search?search=&currentUser=${currentUser}`);
+        const data = await res.json();
+        setUsers(data.users || []);
+      } catch (err) {
+        console.error('Error loading contacts:', err);
+      }
+    };
 
-  const messageListener = (message) => {
-    if (
-      (message.senderEmail === selectedUser?.email && message.receiverEmail === currentUser) ||
-      (message.senderEmail === currentUser && message.receiverEmail === selectedUser?.email)
-    ) {
-      setMessages(prev => [...prev, message]);
-    }
-  };
+    fetchContacts();
+  }, [currentUser]);
 
-  socket.current.on('receive_message', messageListener);
+  useEffect(() => {
+    socket.current = io('https://christ-text-app-server.onrender.com');
+    socket.current.emit('join_room', currentUser);
 
-  return () => {
-    socket.current.off('receive_message', messageListener);
-    socket.current.disconnect();
-  };
-}, [currentUser, selectedUser]);
+    const messageListener = (message) => {
+      if (
+        (message.senderEmail === selectedUser?.email && message.receiverEmail === currentUser) ||
+        (message.senderEmail === currentUser && message.receiverEmail === selectedUser?.email)
+      ) {
+        setMessages(prev => [...prev, message]);
+      }
+    };
 
+    socket.current.on('receive_message', messageListener);
 
-  const handleSearch = async () => {
-    try {
+    return () => {
+      socket.current.off('receive_message', messageListener);
+      socket.current.disconnect();
+    };
+  }, [currentUser, selectedUser]);
+
+  // Search while typing (live search)
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      const fetchSearchResults = async () => {
         if (!searchQuery.trim()) {
-          setUsers([]); 
+          setUsers([]);
           return;
         }
-      const res = await fetch(`https://christ-text-app-server.onrender.com/api/search?search=${searchQuery}&currentUser=${currentUser}`);
-      const data = await res.json();
-      setUsers(data.users || []);
-    } catch (err) {
-      console.error('Error searching users:', err);
-    }
-  };
+        try {
+          const res = await fetch(`https://christ-text-app-server.onrender.com/api/search?search=${searchQuery}&currentUser=${currentUser}`);
+          const data = await res.json();
+          setUsers(data.users || []);
+        } catch (err) {
+          console.error('Error searching users:', err);
+        }
+      };
+      fetchSearchResults();
+    }, 300); // debounce 300ms
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery, currentUser]);
 
   const handleSelectUser = async (user) => {
     setSelectedUser(user);
     setInput('');
     setIsTyping(false);
+    setShowFAQ(true);
+    setFaqLevel(0);
+    setFaqHistory([]);
 
     try {
       const res = await fetch(`https://christ-text-app-server.onrender.com/api/messages?user1=${currentUser}&user2=${user.email}`);
@@ -86,13 +133,12 @@ useEffect(() => {
       });
 
       if (res.ok) {
-  const newMessage = { ...message, timestamp: new Date().toISOString() };
-  setMessages(prev => [...prev, newMessage]);
-
-  socket.current.emit('send_message', newMessage);
-  
-  setInput('');
-}
+        const newMessage = { ...message, timestamp: new Date().toISOString() };
+        setMessages(prev => [...prev, newMessage]);
+        socket.current.emit('send_message', newMessage);
+        setInput('');
+        setShowFAQ(false);
+      }
     } catch (err) {
       console.error('Error sending message:', err);
     }
@@ -110,6 +156,52 @@ useEffect(() => {
     typingTimeout.current = setTimeout(() => setIsTyping(false), 1500);
   };
 
+  const handleFAQClick = (key) => {
+    if (!selectedUser) return; // safety check
+
+    if (faqLevel === 0) {
+      // Student selects a category/topic
+      // Show selected topic as student's message
+      const studentMessage = {
+        senderEmail: currentUser,
+        receiverEmail: selectedUser.email,
+        text: key,
+        timestamp: new Date().toISOString(),
+      };
+      setMessages(prev => [...prev, studentMessage]);
+
+      setFaqHistory([key]);
+      setFaqLevel(1);
+    } else if (faqLevel === 1) {
+      // Student selects a question under a topic
+      // Show selected question as student's message first
+      const studentMessage = {
+        senderEmail: currentUser,
+        receiverEmail: selectedUser.email,
+        text: key,
+        timestamp: new Date().toISOString(),
+      };
+      setMessages(prev => [...prev, studentMessage]);
+
+      // Then show teacher's answer as a message
+      const teacherMessage = {
+        senderEmail: selectedUser.email,  // teacher as sender
+        receiverEmail: currentUser,
+        text: faqData[faqHistory[0]][key],
+        timestamp: new Date().toISOString(),
+      };
+      setMessages(prev => [...prev, teacherMessage]);
+
+      setShowFAQ(false);
+    }
+  };
+
+  const getFAQOptions = () => {
+    if (faqLevel === 0) return Object.keys(faqData);
+    if (faqLevel === 1) return Object.keys(faqData[faqHistory[0]]);
+    return [];
+  };
+
   return (
     <div className="chat-container">
       <div className="box">
@@ -118,7 +210,7 @@ useEffect(() => {
             <img src={logo} id="logo-2" alt="logo" />
             <Link to="/profile">
               <img
-                src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxAPDRANEA0NDw0QDg0NDw0NDg8NDQ0OIBEWFhYRFRMZHCggGBolGxMTITEhJSkrLi4uFx8zODMsNygtLisBCgoKDQ0NDw8NFSsZFRkrKys3LTcrNystLSsrKystLS0tLSs3NysrKzctKysrKysrKysrKysrKysrLSsrKysrK//AABEIAOEA4QMBIgACEQEDEQH/xAAbAAEAAwEBAQEAAAAAAAAAAAAAAQQFBgMCB//EADQQAQACAAMFAg0FAQEAAAAAAAABAgMFEQQhMUFREnEVIjIzUmGBkqGxssHREyNCcoKRc//EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABYRAQEBAAAAAAAAAAAAAAAAAAABEf/aAAwDAQACEQMRAD8A/RAG2QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfX6kgPkAAAAAAAAAAAAECpEJEAAAAAAAAAAAAAAAAAAAAAAAAK8dObR2TKrW33nSOURxe+U7DER+pbfaeETyhqM2qq4WX4VeFdZ6zMrEYdY/jH/H0Ir4tgUnjWN6nj5XS0eLHZn1TuXwHNbTsd8PjGscpjg8HVYlItWazwmNHPbds04V9ONZ31lqVFYSSqIAAAAAAAAAAAAAAAAAAXMr2eL33xrWu+VKW7kuHphdrnMpVaERyEjKoEoABIIVtu2eMSk7t8b4npK0iQcnPHRMrGY4cVxrREcd/qV20QAIAAAAAAAAAAAAAAAAh02xRphV5eLEuZdRs3m6f1r8kqvYQllQAAABEpRIMXO40vWdOMT7eDOaee+Vh91vszFiIAaQAAAAAAAAAAAAAAABDpMuxO1hVn1afZzjWyTHjxsOePlR00Sq1xCWVAAAAESl83tpGs8IBh51i64sV6R+FCHptWJ272t1mZjXlDyhpEgKgAAAAAAAAAAAAAAAA+8DEml4vHGJfBArqNnxovWLRMevTlL1c5sG2fpW59meMfd0GHiRaItE6xLKvsBAAAZWb7XunCjju7XzWMw22MOsxG+8xMRpynrLAtaZmZmdZnisggBpkAAAAAAAAAAAAAAAAAATCEwKh67PtV8PyZ3dJ3w80aINbZ845Xr7YWYzbC9K3u2/Dnwwbt83w44az03THzUsXNcS3DSsfFQQYPq9pmZmZmZnqhCVQAAAAAAAAAAAAAAAAAgB9YeHNp0rEz7Ny9sOW9vxr6xXdpHOWzhYFaRpWsQmrjHwMptO+09mOi5TKMOOM3n2xH2aAmqpeC8Lpb3pPBeF6M+9K6IKXgrC9GfelHgvC9GfeleAUfBWF6M+9KfBeF6M+9K6Ao+CsL0Z96XzbKMOeE3jumPvDQDRk3yWP44k+2uqpjZZi1/j2o61nX4cXQi6Y5K0TE6TExPSd0jqMfZ6XjS1Yn1847pYe3ZfbD8aPGp15171lRTAVAAAAAAAAAACGtl2XcL39kK+U7N27dqeFfm34hm1URCQRUJAAAAAAAAAAABExru5JAYOZ7D+nPbr5E8vRn8KDq70i0TWY1iY0mHNbXgTh3mk98T1jlLUqPEBUAAAAAAE0rMzERxmYiEL+TYPaxe1ypGvt5fcqtjZNnjDpFY75nrPOXsDCgAAAAAAAAAAAAAAADOzrA7WH24414/wBWi+ManaravWsx8AcqIS2yAAAAAANvIq/t2nrfT4R+WI38mj9mPXa0/FKsXgGVAAAAAAAAAAAAAAAAAAcrtFdL3jpe0fGXw9dr87if+l/ql5NoACAAAADoco8xX/X1S550GUeYr32+qUqxdAZUAAAAAAAAAAAAAAAACQHM7dH72J/e3zeCzmUaY9++J+EKzaAAgAAAA6DKPMV77fVIJVi6AyoAAAAAAAAAAAAAAACJISA53NfP3/z9MKgNxAAQAB//2Q=="
+                src={profileImage}
                 alt="profile"
                 className="profile-pic right"
                 id="profile-link"
@@ -132,9 +224,7 @@ useEffect(() => {
             className="search-input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           />
-          <button onClick={handleSearch} className="search-btn">Search</button>
 
           <div className="contacts">
             {users.map((user) => (
@@ -164,7 +254,13 @@ useEffect(() => {
                 ) : (
                   messages.map((msg, idx) => (
                     <div
-                      className={`message ${msg.senderEmail === currentUser ? 'student' : 'professor'}`}
+                      className={`message ${
+                        msg.senderEmail === currentUser
+                          ? 'student'
+                          : msg.senderEmail === 'System'
+                          ? 'system'
+                          : 'professor'
+                      }`}
                       key={msg._id || idx}
                     >
                       <p>{msg.text}</p>
@@ -176,6 +272,17 @@ useEffect(() => {
                   <div className="typing-animation">Typing<span>.</span><span>.</span><span>.</span></div>
                 )}
               </div>
+
+              {showFAQ && (
+                <div className="faq-box">
+                  <h4>Select a topic:</h4>
+                  <div className="faq-options">
+                    {getFAQOptions().map((option, index) => (
+                      <button key={index} onClick={() => handleFAQClick(option)}>{option}</button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="chat-input">
                 <button id="emoji-button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
@@ -198,17 +305,23 @@ useEffect(() => {
                   onChange={handleTyping}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                 />
-                <button onClick={handleSend}>Send</button>
+                <button id="send-btn" onClick={handleSend}>
+                  Send
+                </button>
               </div>
 
               {showEmojiPicker && (
-                <div className="emoji-picker">
-                  <EmojiPicker onEmojiClick={handleEmojiClick} />
-                </div>
+                <EmojiPicker
+                  onEmojiClick={handleEmojiClick}
+                  height={350}
+                  width="100%"
+                />
               )}
             </>
           ) : (
-            <div className="no-selection">Search and select a user to start chatting</div>
+            <div className="no-user-selected">
+              Select a user to start chatting
+            </div>
           )}
         </div>
       </div>
