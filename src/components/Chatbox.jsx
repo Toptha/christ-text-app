@@ -10,17 +10,36 @@ const faqData = {
   "General Queries": {
     "Class Timings": "Your class timings are available on your course portal.",
     "Attendance Policy": "You must maintain at least 75% attendance to be eligible for exams.",
-    "Exam Schedule": "Exam schedules are released 2 weeks before the semester ends."
+    "Exam Schedule": "Exam schedules are released 2 weeks before the semester ends.",
+    "ID Card Lost": "Report to the administration office immediately to request a replacement.",
+    "Library Access": "Your student ID is required to access library facilities and borrow books.",
+    "Hostel Allotment": "Hostel room allotments are announced a week before the semester begins."
   },
   "Assignment Related": {
     "Deadline Extension": "Please contact your course instructor for deadline extensions.",
     "Submission Issues": "Ensure your file is under 10MB and in PDF format.",
-    "Grading Queries": "Grades are published within 7 days of submission."
+    "Grading Queries": "Grades are published within 7 days of submission.",
+    "Late Submission Penalty": "Late submissions may incur a 10% grade deduction per day unless excused.",
+    "Group Assignments": "All members must submit a single file with names and IDs clearly mentioned.",
+    "Plagiarism Policy": "Assignments must be original; plagiarism above 20% can result in disqualification."
   },
   "Technical Support": {
     "Login Issues": "Try resetting your password using the 'Forgot Password' option.",
     "Website Not Working": "Clear cache or try using a different browser.",
-    "File Upload Problem": "Ensure file size is below the limit and in accepted format."
+    "File Upload Problem": "Ensure file size is below the limit and in accepted format.",
+    "Course Portal Access": "Ensure you are using your official college email ID to log in.",
+    "Email Not Working": "Contact the IT Helpdesk or email support@college.edu with your ID and issue.",
+    "VPN Access for Resources": "Use your college login credentials to access the VPN for off-campus access."
+  },
+  "Fee & Finance": {
+    "Fee Payment Deadline": "All tuition fees must be paid before the 10th of every semester month.",
+    "Scholarship Queries": "Reach out to the scholarships department for application deadlines and documents.",
+    "Refund Process": "Refunds are processed within 30 working days from the date of approval."
+  },
+  "Extracurricular Activities": {
+    "Club Registrations": "Clubs open registrations at the start of each semester on the student portal.",
+    "Sports Trials": "Dates for trials are posted on the notice board and college website.",
+    "Event Participation": "Students must get prior approval from the academic office to participate in external events."
   }
 };
 
